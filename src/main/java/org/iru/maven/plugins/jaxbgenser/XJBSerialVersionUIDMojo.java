@@ -68,7 +68,6 @@ public class XJBSerialVersionUIDMojo extends AbstractMojo {
 			sb.append(":").append(project.getArtifactId());
 			sb.append(":").append(extractMajorAndMinor(project.getVersion()));
 			sb.append(":").append(project.getPackaging());
-			System.out.println(sb.toString());
 			md.update(sb.toString().getBytes("UTF-8"));
 			byte[] b = md.digest();
 			long l = 0;
@@ -77,6 +76,9 @@ public class XJBSerialVersionUIDMojo extends AbstractMojo {
 					l <<= 8L;	
 				l += (long) b[i];
 			}
+
+			if (getLog().isInfoEnabled())
+				getLog().info("Using "+sb+" to generate serialVersionUID: "+l);
 
 			DocumentFactory docf = new DocumentFactory();
 			Document doc = docf.createDocument();
