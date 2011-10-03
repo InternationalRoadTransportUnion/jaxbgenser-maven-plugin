@@ -3,6 +3,8 @@ package org.iru.maven.plugins.jaxbgenser;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.security.MessageDigest;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -48,6 +50,15 @@ public class XJBSerialVersionUIDMojo extends AbstractMojo {
 
 	private Namespace JAXB_NAMESPACE = new Namespace("jaxb", "http://java.sun.com/xml/ns/jaxb");
 
+	static String extractMajorAndMinor(String version) {
+		Pattern versionPattern = Pattern.compile("^((\\d+)(\\.\\d+)?)\\.?.*");
+		Matcher m = versionPattern.matcher(version); 
+		if (m.matches())
+			return m.group(1);
+		else
+			return version;
+	}
+	
 	public void execute() throws MojoExecutionException, MojoFailureException {
 
 		MessageDigest md;
@@ -55,8 +66,9 @@ public class XJBSerialVersionUIDMojo extends AbstractMojo {
 			md = MessageDigest.getInstance("SHA-1");
 			StringBuilder sb = new StringBuilder(project.getGroupId());
 			sb.append(":").append(project.getArtifactId());
-			sb.append(":").append(project.getVersion());
+			sb.append(":").append(extractMajorAndMinor(project.getVersion()));
 			sb.append(":").append(project.getPackaging());
+			System.out.println(sb.toString());
 			md.update(sb.toString().getBytes("UTF-8"));
 			byte[] b = md.digest();
 			long l = 0;
