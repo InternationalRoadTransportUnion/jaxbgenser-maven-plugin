@@ -2,11 +2,10 @@ package org.iru.maven.plugins.jaxbgenser;
 
 import junit.framework.Assert;
 
-import org.iru.maven.plugins.jaxbgenser.XJBSerialVersionUIDMojo;
 import org.junit.Test;
 
 
-public class Version {
+public class VersionTest {
 
 	@Test
 	public void testMajorSNAPSHOT() {
