@@ -10,6 +10,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.FileUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentFactory;
 import org.dom4j.Element;
@@ -98,10 +99,20 @@ public class XJBSerialVersionUIDMojo extends AbstractMojo {
 			format.setIndentSize(4); 
 
 			bindingDirectory.mkdirs();
-			File xjb = new File(bindingDirectory, globalBindings);
-			XMLWriter writer = new XMLWriter(new FileOutputStream(xjb), format);
+			int i = globalBindings.lastIndexOf('.');
+			String prefix = i == -1 ? globalBindings : globalBindings.substring(0, i);
+			String suffix = i == -1 || i == globalBindings.length() -1 ? "tmp" : globalBindings.substring(i+1);
+			File tmp = FileUtils.createTempFile(prefix, suffix, bindingDirectory);
+			XMLWriter writer = new XMLWriter(new FileOutputStream(tmp), format);
 			writer.write(doc);
 			writer.close();
+			File xjb = new File(bindingDirectory, globalBindings);
+			if (FileUtils.contentEquals(xjb, tmp)) {
+				tmp.delete();
+			} else {
+				xjb.delete();
+				tmp.renameTo(xjb);
+			}
 		} catch (Exception e) {
 			throw new MojoExecutionException(e.getMessage(), e);
 		}
