@@ -14,6 +14,7 @@
   </licenses>
   <scm>
     <connection>scm:git:https://github.com/InternationalRoadTransportUnion/jaxbgenser-maven-plugin.git</connection>
+    <url>https://github.com/InternationalRoadTransportUnion/jaxbgenser-maven-plugin</url>
   </scm>
   <developers>
     <developer>
